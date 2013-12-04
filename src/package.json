@@ -1,0 +1,15 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.4.3",
+    "jade": "*",
+    "quickthumb": "0.0.8",
+    "underscore": "~1.5.2",
+    "imagemagick": "~0.1.3"
+  }
+}

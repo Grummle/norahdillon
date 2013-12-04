@@ -1,0 +1,7 @@
+.idea/
+.DS_Store
+.dropbox_settings
+.dropbox_sync_data
+src/node_modules/
+src/public/images/
+
