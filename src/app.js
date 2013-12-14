@@ -2,6 +2,9 @@
 /**
  * Module dependencies.
  */
+
+var im = require('imagemagick');
+var async = require('async');
 var dbjs = require('./node_modules/dropbox_client/sync.js');
 var fs = require('fs');
 var coffee = require('coffee-script');
@@ -13,8 +16,12 @@ var qt = require('quickthumb');
 var _ = require('underscore');
 var im = require('imagemagick');
 var path = require('path');
-
-//setInterval(function(){dbjs.doSync(null,path.resolve("./"))},2000);
+var k= require('./keeper');
+var keeper = new k('./file_data','./public/images');
+console.log(keeper);
+keeper.refresh();
+dbjs.doSync(keeper.refresh(),path.resolve("./"));
+setInterval(function(){dbjs.doSync(per.refresh(),path.resolve("./"))},300000);
 
 var app = express();
 
@@ -33,31 +40,24 @@ app.use('/images/thumb', qt.static(path.join(__dirname, 'public/images')));
 
 
 app.use('/api/images/upload',function(req,res){
-    fs.rename(req.files.file.path,path.join(__dirname, 'public/images/'+ new Date().getTime()),function(){});
-    console.log('FILE:'+req.files.file.originalFilename);
+    var newName =path.join(__dirname, 'public/images/'+ new Date().getTime()+path.extname(req.files.file.originalFilename));
+    console.log(newName);
+    fs.rename(req.files.file.path,newName,function(){});
+    keeper.refresh().then(function(){
+        res.set('Content-Type','application/json');
+        res.send(JSON.stringify(_(keeper.data).filter(function(file){return file.name === path.basename(newName) })));
+        var newFile = _(keeper.data).find(function(file){
 
-    req.files.file.path
-    res.send('douche');
-    dbjs.doSync(function(){},'');
+        });
+    });
+
 });
 
 app.use('/api/images',function(req,res){
-    fs.readdir(path.join(__dirname, 'public/images'),function(err,files){
         res.set('Content-Type','application/json');
-        var files = _.chain(files).filter(function(name){
-            return name !== '.DS_Store';
-        }).filter(function(name){
-                return !fs.statSync(path.join(path.join(__dirname, 'public/images'),name)).isDirectory() ;
-            }).map(function(file){
-                return {name:file}
-            }).value();
-        res.send(JSON.stringify(files));
-    });
+        res.send(JSON.stringify(keeper.data));
 });
 
-var getMetaDate = function(path){
-
-};
 
 // development only
 if ('development' == app.get('env')) {
