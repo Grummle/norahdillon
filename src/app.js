@@ -21,7 +21,7 @@ var keeper = new k('./file_data','./public/images');
 console.log(keeper);
 keeper.refresh();
 dbjs.doSync(keeper.refresh(),path.resolve("./"));
-setInterval(function(){dbjs.doSync(per.refresh(),path.resolve("./"))},300000);
+setInterval(function(){dbjs.doSync(keeper.refresh(),path.resolve("./"))},300000);
 
 var app = express();
 

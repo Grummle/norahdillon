@@ -65,6 +65,8 @@ var Keeper = function (data_file_path, images_path) {
                 }).each(function (df) {
                         cbs.push(that.getDimensions('./'+path.join(images_path, df.name)).then(function(dim){
                             _.extend(df,dim);
+                            fs.writeFile(path.resolve(data_file_path), JSON.stringify(data));
+                            console.log(df.name + 'image info gathered');
                         }));
 
                     });
@@ -75,6 +77,7 @@ var Keeper = function (data_file_path, images_path) {
                 console.log(data);
                 //write to file
                 fs.writeFile(path.resolve(data_file_path), JSON.stringify(data));
+                console.log('image data saved');
 
             });
     };

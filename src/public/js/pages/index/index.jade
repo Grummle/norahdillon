@@ -3,8 +3,14 @@
 
 div(dropzone, id="farker", class="dropzone")
 
-div(ng-repeat="image in images")
-    img(ng-src="{{image.thumb_url}}")
+{{images.length}}
+{{perRow}}
+
+button(ng-click="decrease()")
+button(ng-click="increase()")
+
+div(ng-repeat="part in partitions")
+    div(tile-row="part")
 
 
 
